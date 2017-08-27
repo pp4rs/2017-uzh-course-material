@@ -24,7 +24,7 @@
 * Pre-course Survey:
     * [`Google Form`](https://goo.gl/forms/CmUNN5fa7AnNaMu32)
 
-## Creating a copy of this repository
+## Accessing the Course Materials for the First Time
 
 This repository will be updated frequently.
 Here are the necessary instructions so that you have your own copy, and it directly plugs in to ours, so you can get updates as needed:
@@ -57,7 +57,7 @@ After opening a terminal on his computer he enters the following commands (after
 *Note:* Notice how there was no whitespace in the filepath `phd-courses\2nd-year`.
 We recommend you also do not have whitespace in your paths, it makes everything less error prone.
 
-## Keeping your repository up to date
+## Keeping your Course Materials up to date
 
 When you want try and update your repository with new course material we post, use the following commands:
 
