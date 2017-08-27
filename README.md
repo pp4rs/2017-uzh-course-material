@@ -29,4 +29,58 @@
 This repository will be updated frequently.
 Here are the necessary instructions so that you have your own copy, and it directly plugs in to ours, so you can get updates as needed:
 
-1. Fork this repository
+1. Fork this repository by clicking `Fork` on the Github page
+    * This gives you your own copy of the repository on GitHub
+2. Clone your copy of the repository, by entering the following commands into a terminal after navigating to a folder that you want the materials to live inside:
+    ```bash
+        $ git clone https://github.com/YOURUSERNAME/2017-uzh-course-material.git
+    ```
+    * This gives you your own copy of the repository on your computer
+3. Connect an `upstream` branch to the pp4rs master repository:
+    ```bash
+        $ git remote add upstream https://github.com/pp4rs/2017-uzh-course-material.git
+    ```
+    * This gives you the ability to connect to the repository where new materials will be added throughout the course
+
+### A guided example of forking the repository and downloading its contents:
+
+Suppose Lachlan wants to clone the file repository to his own machine.
+First he forks a copy on GitHub.
+
+He wants to download the repository to a folder he has called `phd-courses/2nd-year/` which lives inside his `home` folder.
+After opening a terminal on his computer he enters the following commands (after the `$`` sign):
+
+```bash
+$ cd phd-courses/2nd-year
+~/phd-courses/2nd-year/$ git clone https://github.com/lachlandeer/2017-uzh-course-material.git
+```
+
+*Note:* Notice how there was no whitespace in the filepath `phd-courses\2nd-year`.
+We recommend you also do not have whitespace in your paths, it makes everything less error prone.
+
+## Keeping your repository up to date
+
+When you want try and update your repository with new course material we post, use the following commands:
+
+1. Navigate to the repository's root folder
+    ```bash
+        $ cd path/to/2017-uzh-course-material
+    ```
+    * *Note:* be careful and alter the path above to match your filesystem.
+1. `Fetch` the new contents from the `upstream` branch
+    ```bash
+        ~/phd-courses/2nd-year/$ git fetch upstream
+    ```
+2. Checkout the current branch, called `master`, of the files on your computer
+    ```bash
+        ~/phd-courses/2nd-year/$ git checkout master
+    ```
+3. Merge the updated materials from `upstream` into master
+    ```bash
+        ~/phd-courses/2nd-year$ git merge upstream/master
+    ```
+
+Now you have the most upto date version of the course materials on your computer.
+
+
+### A guided example
