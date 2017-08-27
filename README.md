@@ -42,18 +42,17 @@ Here are the necessary instructions so that you have your own copy, and it direc
     ```
     * This gives you the ability to connect to the repository where new materials will be added throughout the course
 
-### A guided example of forking the repository and downloading its contents:
+#### A guided example of forking the repository and downloading its contents:
 
 Suppose Lachlan wants to clone the file repository to his own machine.
-First he forks a copy on GitHub.
 
-He wants to download the repository to a folder he has called `phd-courses/2nd-year/` which lives inside his `home` folder.
+* First he forks a copy on GitHub.
+*  He wants to download the repository to a folder he has called `phd-courses/2nd-year/` which lives inside his `home` folder.
 After opening a terminal on his computer he enters the following commands (after the `$`` sign):
-
-```bash
-$ cd phd-courses/2nd-year
-~/phd-courses/2nd-year/$ git clone https://github.com/lachlandeer/2017-uzh-course-material.git
-```
+    ```bash
+    $ cd phd-courses/2nd-year
+    ~/phd-courses/2nd-year/$ git clone https://github.com/lachlandeer/2017-uzh-course-material.git
+    ```
 
 *Note:* Notice how there was no whitespace in the filepath `phd-courses\2nd-year`.
 We recommend you also do not have whitespace in your paths, it makes everything less error prone.
@@ -64,7 +63,7 @@ When you want try and update your repository with new course material we post, u
 
 1. Navigate to the repository's root folder
     ```bash
-        $ cd path/to/2017-uzh-course-material
+        ~$ cd path/to/2017-uzh-course-material
     ```
     * *Note:* be careful and alter the path above to match your filesystem.
 1. `Fetch` the new contents from the `upstream` branch
@@ -83,4 +82,34 @@ When you want try and update your repository with new course material we post, u
 Now you have the most upto date version of the course materials on your computer.
 
 
-### A guided example
+#### A guided example
+
+Suppose Lachlan has come back after lunch and wants to download the materials for the afternoon session.
+After turning on his computer and opening a terminal he enters the following commands
+
+```bash
+    ~$ cd phd-courses/2nd-year/2017-uzh-course-material
+    ~/phd-courses/2nd-year/2017-uzh-course-material$ git fetch upstream
+    ~/phd-courses/2nd-year/2017-uzh-course-material$ git checkout master
+    ~/phd-courses/2nd-year/2017-uzh-course-material$ git merge upstream/master
+```
+
+* *Note:* If you get an error message, as a first step ensure that you committed all your files from your last session.
+
+
+## License
+
+All materials are licensed under a Creative Commons CC-BY-NC-SA license. The license allows you to copy, remix and redistribute any of our publicly available materials, under the condition that you attribute the work (details in the license) and do not make profits from it. More information is available [here](https://pp4rs.github.io/2017-uzh/license/)
+
+
+## Suggested Citation
+
+The suggested citation for this repository is:
+
+```
+Lachlan Deer, Adran Etter, Julian Langer & Max Winkler, 2017, Course Materials, Programming Practices for Research in Economics, University of Zurich
+```
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />
+
+This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
