@@ -1,0 +1,52 @@
+
+Institution	Last Name	First Name	Job Title	Department	Salary	FTE
+TCAT Murfreesboro	Albers	Jenny	Acad & Student Sup Assoc 3	Other General	$28,050	1
+Northeast State Comm College	Albright	Kathy	Secretary 2 - Testing Services	Counseling and Testing Services	$22,861	1
+Chattanooga State Comm College	Albritton	Sheila	Director	Success Coaching	$69,200	1
+Walters State Comm College	Alcorn	Kathy	Associate Professor	R and D Reading	$48,796	1
+Walters State Comm College	Alcorn	Steven	Associate Professor	English	$51,750	1
+TCAT Morristown	Aldred	Darren	Senior Instructor	Drafting	$65,486	1
+Nashville State Comm College	Aldridge	George	Security Coordinator	Safety And Security Legacy	$40,835	1
+Southwest TN Comm College	Alekseyeva-Logs	Irina	Technical Clerk	Honors Academy	$21,312	0.8
+Columbia State Comm College	Alexander	William	Security Guard 1	Safety and Security	$26,320	1
+Walters State Comm College	Alexander	Julie	Human Resources Specialist	Human Resources	$40,019	1
+Volunteer State Comm College	Alexander	Charles	Director	Restricted Fund Expenditures	$67,720	1
+Volunteer State Comm College	Alexander	Robert	Custodian	Custodial	$24,000	1
+Volunteer State Comm College	Alexander	Umeka	Admissions Associate	Office of Director of Admissions	$31,331	1
+Pellissippi State Comm College	Alexander	Lucinda	Associate Professor	Business	$64,430	1
+Roane State Comm College	Alfonso	Robert	Associate Professor English	English	$55,175	1
+Dyersburg State Comm College	Alford	Jeffery	Instructional Support Spec	Tech Fee Computer Lab	$42,091	1
+Dyersburg State Comm College	Alford	Mary	Computer Programmer Analyst	Computer Services	$47,900	1
+Dyersburg State Comm College	Alford	Rodney	Library Assistant Iii	Library Services	$37,460	1
+Chattanooga State Comm College	Alfrey	Joanne	Admissions Records Clerk Pt	Customer Response Center	$17,455	0.8
+TCAT Knoxville	Allen	Lisa	Financial Support Associate 3	Director's Office	$28,140	1
+Northeast State Comm College	Allen	William	Instructor	Indus Tech Mechanical	$45,016	1
+Southwest TN Comm College	Allen	Roderick	Automotive Mechanic	Motor Pool	$31,200	1
+TCAT McMinnville	Allen	Margarete	Coordinator (Ttcm)	Administration	$54,007	1
+Volunteer State Comm College	Allen	Jana	Associate Professor 12 Month	Allied Health Core	$73,304	1
+Volunteer State Comm College	Allen	Kristi	Senior Financial Analyst	Business Office	$48,898	1
+Volunteer State Comm College	Allen	Teresa	Instructor 9/10 Month	Health Information Technology	$43,934	1
+Nashville State Comm College	Allen	Kenneth	Instructor	Math Clarksville	$34,591	1
+TCAT Memphis	Allen-Wallace	Latrisia	Academic/Student Associate	Financial Aid	$42,360	1
+Volunteer State Comm College	Allender	Carole	Dual Enrollment Assistant	Dual Enrollment	$34,983	1
+Chattanooga State Comm College	Allison	Reed	Director	Financial Aid	$68,133	1
+Columbia State Comm College	Allison	Joni	Coordinator	Adult Student Services	$52,150	1
+Northeast State Comm College	Almaroad	Megan	Financial Management Analyst	Budgeting and Financial Analysis	$43,757	1
+Chattanooga State Comm College	Alonso Santilla	Juan	Assistant Professor	Humanities	$46,633	1
+Volunteer State Comm College	Alspaugh	Richard	Instructor 12 Month	EMT Paramedic	$60,450	1
+Chattanooga State Comm College	Alston	Bruce	Director, Media Services	Media Services	$69,865	1
+Motlow State Comm College	Alsup	Greer	Completion Coach	Student Success	$47,476	1
+Nashville State Comm College	Alvarado	Eleonora	Assistant Professor	Healthcare Management	$58,571	1
+Pellissippi State Comm College	Amburn	Anita	Program Support Specialist	Academic Services Department	$43,670	1
+Chattanooga State Comm College	Ames	Linda	Admissions & Records Lead Work	Admissions/Records	$29,792	1
+TCAT Nashville	Ammons	Donna	Senior Instructor-Ttcn	Practical Nursing	$59,208	1
+TCAT Nashville	Ammons	Wanda	Academic Stud Supp Assoc 4	Institutional Support	$31,668	1
+Pellissippi State Comm College	Ammons	Brenda	Associate Professor	Mathematics	$61,500	1
+Chattanooga State Comm College	Amsler	Sandra	Secretary 3	Admissions/Records	$30,056	1
+Volunteer State Comm College	Amyx	Timothy	Director College Registrar	Office of Records and Registration	$67,021	1
+TCAT Whiteville	Anderson	Terry	Assoc.Instructor Ttc Whitevill	Practical Nursing	$56,761	1
+Chattanooga State Comm College	Anderson	Lori	Information Processing Spclist	Financial Aid	$38,766	1
+Chattanooga State Comm College	Anderson	Michael	Custodian	Custodial Services	$21,482	1
+Chattanooga State Comm College	Anderson	William	Electrician High Voltage	Maintenance and Repairs	$39,392	1
+Northeast State Comm College	Anderson	Allan	Associate Professor	Computer and Info Sciences Tech	$50,808	1
+Northeast State Comm College	Anderson	Rai	Associate Professor	BSMG Tech Accounting	$50,543	1
