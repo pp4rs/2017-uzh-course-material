@@ -11807,7 +11807,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[72]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># get the table where salaries are</span>
@@ -11830,7 +11830,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[64]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># find employee</span>
@@ -11873,7 +11873,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[41]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_employee_name</span><span class="p">(</span><span class="n">employee_data</span><span class="p">):</span>
@@ -11890,7 +11890,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[42]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_employee_name</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
@@ -11904,7 +11904,7 @@ to this:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[42]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[6]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -11919,12 +11919,12 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[43]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_employee_job</span><span class="p">(</span><span class="n">employee_data</span><span class="p">):</span>
     <span class="n">employee_job</span> <span class="o">=</span> <span class="n">employee_data</span><span class="o">.</span><span class="n">findNext</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">findNext</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">href</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">employee_job_text</span> <span class="o">=</span> <span class="n">employee_job</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">employee_job_text</span> <span class="o">=</span> <span class="n">employee_job</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
     
     <span class="k">return</span> <span class="n">employee_job_text</span>
 </pre></div>
@@ -11936,7 +11936,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[44]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_employee_job</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
@@ -11950,11 +11950,11 @@ to this:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[44]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[8]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;INTERCOL ATH HEAD COACH EX&#39;</pre>
+<pre>&#39;intercol ath head coach ex&#39;</pre>
 </div>
 
 </div>
@@ -11965,7 +11965,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">money_to_int</span><span class="p">(</span><span class="n">moneystring</span><span class="p">):</span>
@@ -11981,7 +11981,7 @@ to this:
     <span class="k">return</span> <span class="n">moneystring</span>
 
 <span class="k">def</span> <span class="nf">get_total_pay</span><span class="p">(</span><span class="n">employee_data</span><span class="p">):</span>
-    <span class="n">total_income</span> <span class="o">=</span> <span class="n">employee</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+    <span class="n">total_income</span> <span class="o">=</span> <span class="n">employee_data</span><span class="p">(</span><span class="s1">&#39;td&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
     <span class="k">return</span> <span class="n">money_to_int</span><span class="p">(</span><span class="n">total_income</span><span class="p">)</span>
 </pre></div>
 
@@ -11992,7 +11992,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[63]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">get_total_pay</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
@@ -12006,7 +12006,7 @@ to this:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[63]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[10]:</div>
 
 
 <div class="output_text output_subarea output_execute_result">
@@ -12021,7 +12021,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[58]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Packing it into a row of data</span>
@@ -12034,7 +12034,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[67]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">process_employee</span><span class="p">(</span><span class="n">employee_data</span><span class="p">):</span>
@@ -12061,7 +12061,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[68]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">process_employee</span><span class="p">(</span><span class="n">employee</span><span class="p">)</span>
@@ -12075,7 +12075,7 @@ to this:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[68]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[13]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -12092,7 +12092,7 @@ to this:
     <tr>
       <th>0</th>
       <td>James Lawrence Mora</td>
-      <td>INTERCOL ATH HEAD COACH EX</td>
+      <td>intercol ath head coach ex</td>
       <td>3577299.0</td>
     </tr>
   </tbody>
@@ -12117,7 +12117,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[89]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -12139,7 +12139,7 @@ to this:
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[90]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">df_staff</span>
@@ -12153,7 +12153,7 @@ to this:
 <div class="output">
 
 
-<div class="output_area"><div class="prompt output_prompt">Out[90]:</div>
+<div class="output_area"><div class="prompt output_prompt">Out[15]:</div>
 
 <div class="output_html rendered_html output_subarea output_execute_result">
 <div>
@@ -12170,302 +12170,302 @@ to this:
     <tr>
       <th>0</th>
       <td>James Lawrence Mora</td>
-      <td>INTERCOL ATH HEAD COACH EX</td>
+      <td>intercol ath head coach ex</td>
       <td>3577299.0</td>
     </tr>
     <tr>
       <th>1</th>
       <td>Cuonzo Martin</td>
-      <td>HEAD COACH 5</td>
-      <td>3577299.0</td>
+      <td>head coach 5</td>
+      <td>2933098.0</td>
     </tr>
     <tr>
       <th>2</th>
       <td>Daniel Dykes</td>
-      <td>HEAD COACH 5</td>
-      <td>3577299.0</td>
+      <td>head coach 5</td>
+      <td>2891233.0</td>
     </tr>
     <tr>
       <th>3</th>
       <td>Stephen Todd Alford</td>
-      <td>INTERCOL ATH HEAD COACH EX</td>
-      <td>3577299.0</td>
+      <td>intercol ath head coach ex</td>
+      <td>2721405.0</td>
     </tr>
     <tr>
       <th>4</th>
       <td>Gordon Alan Cohen</td>
-      <td>HS CLIN INSTR-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin instr-hcomp</td>
+      <td>2720796.0</td>
     </tr>
     <tr>
       <th>5</th>
       <td>Ronald W Busuttil</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>2482207.0</td>
     </tr>
     <tr>
       <th>6</th>
       <td>Vadiyala Mohan Reddy</td>
-      <td>ACT PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>act prof-hcomp</td>
+      <td>1943521.0</td>
     </tr>
     <tr>
       <th>7</th>
       <td>Timothy H Mccalmont</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1926941.0</td>
     </tr>
     <tr>
       <th>8</th>
       <td>Eric Esrailian</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>1837625.0</td>
     </tr>
     <tr>
       <th>9</th>
       <td>Philip E Leboit</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1779457.0</td>
     </tr>
     <tr>
       <th>10</th>
       <td>Robert N. Weinreb</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1626782.0</td>
     </tr>
     <tr>
       <th>11</th>
       <td>Benjamin J Ansell</td>
-      <td>HS CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin prof-hcomp</td>
+      <td>1615837.0</td>
     </tr>
     <tr>
       <th>12</th>
       <td>Gary L Gitnick</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1599932.0</td>
     </tr>
     <tr>
       <th>13</th>
       <td>Michael M. Madani</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1579002.0</td>
     </tr>
     <tr>
       <th>14</th>
       <td>Khalil M Tabsh</td>
-      <td>HS CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin prof-hcomp</td>
+      <td>1522723.0</td>
     </tr>
     <tr>
       <th>15</th>
       <td>Naveen D Bhandarkar</td>
-      <td>ASSOC PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>assoc prof of clin-hcomp</td>
+      <td>1476956.0</td>
     </tr>
     <tr>
       <th>16</th>
       <td>Brian G Derubertis</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>1426581.0</td>
     </tr>
     <tr>
       <th>17</th>
       <td>Abbas Ardehali</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1413454.0</td>
     </tr>
     <tr>
       <th>18</th>
       <td>Dinesh K Chhetri</td>
-      <td>PROF IN RES-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof in res-hcomp</td>
+      <td>1377175.0</td>
     </tr>
     <tr>
       <th>19</th>
       <td>Ehtisham Mahmud</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1356857.0</td>
     </tr>
     <tr>
       <th>20</th>
       <td>Richard J Shemin</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1356682.0</td>
     </tr>
     <tr>
       <th>21</th>
       <td>Jagdeep Bachher</td>
-      <td>CHF INV OFCR</td>
-      <td>3577299.0</td>
+      <td>chf inv ofcr</td>
+      <td>1330411.0</td>
     </tr>
     <tr>
       <th>22</th>
       <td>Michael T Lawton</td>
-      <td>PROF IN RES-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof in res-hcomp</td>
+      <td>1286949.0</td>
     </tr>
     <tr>
       <th>23</th>
       <td>Jeffrey Dong-Sun Suh</td>
-      <td>ASSOC PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>assoc prof of clin-hcomp</td>
+      <td>1286029.0</td>
     </tr>
     <tr>
       <th>24</th>
       <td>Daniel H Geschwind</td>
-      <td>PROF IN RES-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof in res-hcomp</td>
+      <td>1249476.0</td>
     </tr>
     <tr>
       <th>25</th>
       <td>Shang I Brian Jiang</td>
-      <td>HS CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin prof-hcomp</td>
+      <td>1233021.0</td>
     </tr>
     <tr>
       <th>26</th>
       <td>Mark R Laret</td>
-      <td>CEO MED CTR</td>
-      <td>3577299.0</td>
+      <td>ceo med ctr</td>
+      <td>1206918.0</td>
     </tr>
     <tr>
       <th>27</th>
       <td>James M Heaps</td>
-      <td>HS CLIN INSTR-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin instr-hcomp</td>
+      <td>1182265.0</td>
     </tr>
     <tr>
       <th>28</th>
       <td>Merrill E Gershwin</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1154733.0</td>
     </tr>
     <tr>
       <th>29</th>
       <td>Gerald S Berke</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1140981.0</td>
     </tr>
     <tr>
       <th>30</th>
       <td>Nicholas C Saenz</td>
-      <td>HS CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin prof-hcomp</td>
+      <td>1130466.0</td>
     </tr>
     <tr>
       <th>31</th>
       <td>Isaac M Neuhaus</td>
-      <td>ASSOC PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>assoc prof of clin-hcomp</td>
+      <td>1124390.0</td>
     </tr>
     <tr>
       <th>32</th>
       <td>Neil A Martin</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1124019.0</td>
     </tr>
     <tr>
       <th>33</th>
       <td>Michael W Mcdermott</td>
-      <td>PROF IN RES-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof in res-hcomp</td>
+      <td>1116652.0</td>
     </tr>
     <tr>
       <th>34</th>
       <td>John P Roberts</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1116517.0</td>
     </tr>
     <tr>
       <th>35</th>
       <td>Michael L. Levy</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1096502.0</td>
     </tr>
     <tr>
       <th>36</th>
       <td>Gert Diederick Pretorius</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>1087901.0</td>
     </tr>
     <tr>
       <th>37</th>
       <td>Christopher P Ames</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1079729.0</td>
     </tr>
     <tr>
       <th>38</th>
       <td>Ann Madden Rice</td>
-      <td>CEO MED CTR</td>
-      <td>3577299.0</td>
+      <td>ceo med ctr</td>
+      <td>1079364.0</td>
     </tr>
     <tr>
       <th>39</th>
       <td>John Stuart Nelson</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1073142.0</td>
     </tr>
     <tr>
       <th>40</th>
       <td>Joseph F Greco</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>1027188.0</td>
     </tr>
     <tr>
       <th>41</th>
       <td>Scott M Lippman</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1023059.0</td>
     </tr>
     <tr>
       <th>42</th>
       <td>Jay Moon Lee</td>
-      <td>ASSOC PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>assoc prof-hcomp</td>
+      <td>1019937.0</td>
     </tr>
     <tr>
       <th>43</th>
       <td>Praveen Mummaneni</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1014222.0</td>
     </tr>
     <tr>
       <th>44</th>
       <td>Frank P.K. Hsu</td>
-      <td>PROF OF CLIN-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof of clin-hcomp</td>
+      <td>1007475.0</td>
     </tr>
     <tr>
       <th>45</th>
       <td>Mitchel S Berger</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1006482.0</td>
     </tr>
     <tr>
       <th>46</th>
       <td>Bryan M. Clary</td>
-      <td>PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>prof-hcomp</td>
+      <td>1005880.0</td>
     </tr>
     <tr>
       <th>47</th>
       <td>Timothy J Fairbanks</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>1005519.0</td>
     </tr>
     <tr>
       <th>48</th>
       <td>Michael H Rosove</td>
-      <td>HS CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs clin prof-hcomp</td>
+      <td>1000452.0</td>
     </tr>
     <tr>
       <th>49</th>
       <td>Merry L Tetef</td>
-      <td>HS ASSOC CLIN PROF-HCOMP</td>
-      <td>3577299.0</td>
+      <td>hs assoc clin prof-hcomp</td>
+      <td>999999.0</td>
     </tr>
   </tbody>
 </table>
