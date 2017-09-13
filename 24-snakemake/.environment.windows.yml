@@ -1,0 +1,50 @@
+dependencies:
+- alabaster=0.7.6=py36_0
+- babel=2.1.1=py36_0
+- colorama=0.3.3=py36_0
+- cycler=0.9.0=py36_0
+- decorator=4.0.4=py36_0
+- ipykernel=4.1.1=py36_0
+- ipython-notebook
+- jinja2=2.8=py36_0
+- jsonschema=2.4.0=py36_0
+- jupyter_client=4.1.1=py36_0
+- jupyter_core=4.0.6=py36_0
+- libpng
+- markupsafe=0.23=py36_0
+- matplotlib
+- mistune=0.7.1=py36_0
+- nbconvert=4.0.0=py36_0
+- nbformat=4.0.1=py36_0
+- notebook=4.0.6=py36_0
+- numpy=1.10.1=py36_0
+- openssl
+- pandas
+- path.py=8.1.2=py36_1
+- pickleshare=0.5=py36_0
+- pip=7.1.2=py36_0
+- pygments=2.0.2=py36_0
+- pyparsing=2.0.3=py36_0
+- python=3.6
+- python-dateutil=2.4.2=py36_0
+- pytz=2015.7=py36_0
+- pyzmq=14.7.0=py36_1
+- setuptools=18.5=py36_0
+- simplegeneric=0.8.1=py36_0
+- sip=4.16.9=py36_0
+- six=1.10.0=py36_0
+- snowballstemmer=1.2.0=py36_0
+- tornado=4.3=py36_0
+- traitlets=4.0.0=py36_0
+- wheel=0.26.0=py36_1
+- yaml=0.1.6=0
+- zlib
+- pip:
+  - ipython-genutils==0.1.0
+  - jupyter-client==4.1.1
+  - jupyter-core==4.0.6
+  - latexcodec==1.0.1
+  - oset==0.1.3
+  - pybtex==0.19
+  - pybtex-docutils==0.2.1
+  - snakemake==4.0.0
