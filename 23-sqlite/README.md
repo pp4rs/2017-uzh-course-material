@@ -24,8 +24,8 @@ This module aims to:
     *   Software Carpentry's [`Using Databases and SQL`](http://swcarpentry.github.io/sql-novice-survey/) lesson
     *   Data Carpentry's [`Ecology Workshop`](http://www.datacarpentry.org/lessons/)
 
-*   The [`Household Wealth` example](./examples-householdWealth/) borrows data and inspiration from the [`Data Management` session](http://www.wiwi.uni-bonn.de/gaudecker/teaching/prog_econ/2016/16_data_management.pdf) of Hans-Martin's course
-*   The [`Auctions` example](./examples-householdWealth/) borrows data and some modified source codes from the book [`A Gentle Introduction to Effective Computing in Quantitative Research: What Every Research Assistant Should Know`](https://mitpress.mit.edu/books/gentle-introduction-effective-computing-quantitative-research) by [Harry J Paarsch](https://sites.google.com/site/hjpaarsch/) and [Konstantin Golyaev](http://www.kgolyaev.com/blog)
+*   The [`Household Wealth` example](./additional-exericse/) borrows data and inspiration from the [`Data Management` session](http://www.wiwi.uni-bonn.de/gaudecker/teaching/prog_econ/2016/16_data_management.pdf) of Hans-Martin's course
+*   The [`Auctions` example](./class-example/) borrows data and some modified source codes from the book [`A Gentle Introduction to Effective Computing in Quantitative Research: What Every Research Assistant Should Know`](https://mitpress.mit.edu/books/gentle-introduction-effective-computing-quantitative-research) by [Harry J Paarsch](https://sites.google.com/site/hjpaarsch/) and [Konstantin Golyaev](http://www.kgolyaev.com/blog)
 
 ## Suggested Citation
 
