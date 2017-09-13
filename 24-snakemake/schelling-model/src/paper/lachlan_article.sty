@@ -1,0 +1,101 @@
+% %load packages
+
+\usepackage{pgf}
+\usepackage{setspace}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+
+
+
+%Formatting of headings and subheadings
+\renewcommand{\section}{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\reset@font\bfseries}}
+\renewcommand{\subsection}{\@startsection{subsection}{2}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\reset@font\itshape}}
+\renewcommand{\subsubsection}{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {-1em}%
+                                     {\reset@font\normalsize\itshape}}
+\renewcommand{\paragraph}{\@startsection{paragraph}{4}{\z@}%
+                                    {3.25ex \@plus1ex \@minus.2ex}%
+                                    {-1em}%
+                                    {\reset@font\normalsize\itshape}}
+\renewcommand{\subparagraph}{\@startsection{subparagraph}{5}{\parindent}%
+                                       {3.25ex \@plus1ex \@minus .2ex}%
+                                       {-1em}%
+                                      {\reset@font\normalsize\bfseries}}
+
+%Modification of LATEX.LTX's \@sect to put a period after a section number
+%(but not after a subsection number).  [The modification is in lines 4--7.]
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+     \ifnum #2>\c@secnumdepth\let\@svsec\@empty%
+     \else
+        \ifnum #2=\@ne\refstepcounter{#1}%
+           \protected@edef\@svsec{\csname the#1\endcsname.\hskip 1em }
+        \else\refstepcounter{#1}%
+           \protected@edef\@svsec{\csname the#1\endcsname\hskip 1em }\fi
+     \fi
+     \@tempskipa #5\relax
+      \ifdim \@tempskipa>\z@
+        \begingroup #6\relax
+          \@hangfrom{\hskip #3\relax\@svsec}%
+                    {\interlinepenalty \@M #8\par}%
+        \endgroup
+       \csname #1mark\endcsname{#7}\addcontentsline
+         {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                      \protect\numberline{\csname the#1\endcsname}\fi
+                    #7}\else
+        \def\@svsechd{#6\hskip #3\relax  %% \relax added 2 May 90
+                   \@svsec #8\csname #1mark\endcsname
+                      {#7}\addcontentsline
+                           {toc}{#1}{\ifnum #2>\c@secnumdepth \else
+                           \protect\numberline{\csname the#1\endcsname}%
+                                     \fi
+                       #7}}\fi
+     \@xsect{#5}}
+
+\def\thesection {\arabic{section}}
+\def\thesubsection {\thesection.\arabic{subsection}}
+\def\thesubsubsection {\thesubsection.\arabic{subsubsection}}
+\def\theparagraph {\thesubsubsection.\arabic{paragraph}}
+\def\thesubparagraph {\theparagraph.\arabic{subparagraph}}
+
+
+
+% theorems etc
+\newtheorem{defn}{Definition}[section]
+\newtheorem{Example}{Example}[section]
+\newtheorem{Theorem}{Theorem}[section]
+\newtheorem{Proof}{Proof}[section]
+\newtheorem{Lemma}{Lemma}[section]
+\newtheorem{Corollary}{Corollary}[section]
+\newtheorem{Axiom}{Axiom}[section]
+\newtheorem{Assumption}{Assumption}[section]
+\newtheorem{hyp}{Hypothesis}
+\newtheorem{res}{Result}[section]
+\newtheorem{obs}{Observation}
+\newtheorem{conj}{Conjecture}
+\newtheorem{algorithm}{Algorithm}
+\newtheorem{RQ}{Research Question}
+
+\newcommand{\qedd}{\hspace*{\fill}$\Box$\endtrivlist}
+\def\argmax{\mathop{\rm arg\,max}}
+\def\realR{\mathbb{R}}
+
+
+
+
+
+% Margin, Paragraph Setup
+%\onehalfspacing
+\textheight=21.5cm \textwidth=14.95cm \topmargin=-5.5mm
+\oddsidemargin=8mm \evensidemargin=8mm
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1.5ex plus0.5ex minus0.5ex}
+\setlength{\parsep}{0pt}
+%\setlength{\parskip}{1.5 pt}
+\usepackage{palatino}
