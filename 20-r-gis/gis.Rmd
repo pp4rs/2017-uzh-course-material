@@ -1,0 +1,911 @@
+---
+title:  'Introduction to R as a GIS'
+author: "Max Winkler"
+date:   "13 September 2017"
+output: html_document
+---
+
+```{r knitr_init, echo=FALSE, results='hide', cache=FALSE,message=FALSE, warning=FALSE}
+library(knitr)
+#library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               # tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+
+```
+
+
+# Introduction
+R has a full library of tools for working with spatial data. This includes tools for both vector and raster data, as well as interfacing with data from other sources (like ArcGIS) and making maps.
+
+There tons of libraries in the `R` universe that provide functionality to work with spatial data. You can find an overview of these packages [here](https://cran.r-project.org/web/views/Spatial.html). In this document, I will introduce four highly popular libraries:
+
+* `sp`: for working with vector data
+* `rgdal`: for importing and exporting vector data from other programs
+* `raster`: for working with raster data
+* `rgeos`: for working with geometric operations, such as creating buffers, creating geometric intersections, unions of polygons, etc.
+
+Moreover, I will point you to a recently written package called `sf` (for Simple Features). It follows the tidyverse philosphy and a pretty interesting improvement on `sp`/`rgdal`/`rgeos`. It may replace these packages in the future.
+
+```{r}
+# load package for vector data
+library(sp)
+library(rgdal)
+
+# load package for raster data
+library(raster)
+
+# load package for working with geometric options
+library(rgeos)
+
+# new package for vector data; will replace sp, rgdal, and rgeos for vector data
+library(sf)
+
+# data management and plotting
+library(tidyverse)
+```
+
+# 1. Spatial Data Types in R
+
+First, I will introduce you to the two types of spatial data you will encounter in R: vector data and raster data.
+
+## 1.1. Vector Data
+Almost all spatial vector data structures in R are based on the `sp` package. Even other libraries that may seem independent are usually built on top of `sp`, even if you can't see it.
+
+The `sp` package has three main types of spatial data we'll work with: points, lines, and polygons. There are some differences between these different types, but they are all very similar.
+
+To help you understand what these data structures are like, in this section we'll create some spatial data from scratch. This is probably not how you'll work with data in the future -- most of the time you just import spatial data from a source -- but this exercise will help give you a good foundation and help you know how to troubleshoot problems in the future.
+
+There are three basic steps to creating spatial data by hand:
+
+* **Create geometric objects (points, lines, or polygons)**
+* **Convert those geometric objects to `Spatial*` objects (`*` stands for Points, Lines, or Polygons)**
+    + Geometric objects live in an abstract space (the x-y plane). To make them *spatial* objects, we also need to include information on how those x-y coordinates relate the places in the real world using a Coordinate Reference System (CRS).
+
+* **(_Optional_:) Add a data frame with attribute data, which will turn your `Spatial*` object into a `Spatial*DataFrame` object.**
+
+### 1.1.1 SpatialPoints: Your First Spatial* Object!
+Points are the most basic geometric shape, so we begin by building a `SpatialPoints` object.
+
+#### Make Points.
+A points is defined by a pair of x-y coordiantes, so we can create a set of points by (a) creating  matrix of x-y points, and (b) passing them to the `SpatialPoints` function to create our first `SpatialPoints` object:
+
+```{r}
+toy.coordinates <- rbind(c(1.5, 2.00),
+                          c(2.5, 2.00),
+                          c(0.5, 0.50),
+                          c(1.0, 0.25),
+                          c(1.5, 0.00),
+                          c(2.0, 0.00),
+                          c(2.5, 0.00),
+                          c(3.0, 0.25),
+                          c(3.5, 0.50))
+
+toy.coordinates
+my.first.points <- SpatialPoints(toy.coordinates) # ..converted into a spatial object
+plot(my.first.points)
+```
+
+To get a summary of how R sees these points, we can ask it for summary information in a couple different ways. Here's a summary of available commands:
+
+```{r}
+summary(my.first.points)
+coordinates(my.first.points)
+```
+
+#### Add a Coordinate Reference System (CRS)
+
+Unlike a simple geometric object, a `SpatialPoints` object has the ability to keep track of how the coordinates of its points relate to places in the real world through an associated "Coordinate Reference System" (CRS -- the combination of a geographic coordinate system and possibly a projection), which is stored using a code called a `proj4string`. The proj4string is so important to a `SpatialPoints` object, that it's presented right in the summary:
+
+```{r}
+summary(my.first.points)
+```
+
+In this case, however, while our `SpatialPoints` object clearly knows what a CRS *is*, the Spatial object we just created __does not__ have a projection or geographic coordinate system defined. It is ok to plot, but be aware that for many meaningful spatial operations you will need to define a CRS.
+
+CRS objects can be created by passing the `CRS()` function the code associated with a known projection. You can find the codes for most commonly used projections from [www.spatialreference.org](www.spatialreference.org). 
+
+Note that the same CRS can often be called in many ways. For example, one of the most commonly used CRS is the WGS84 latitude-longitude projection. You can create a WGS84 lat-long projection object by either passing the reference code for the projection --  `CRS("+init=epsg:4326"`) -- or by directly calling all its relevant parameters -- `CRS("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")`. Your choice of CRS ususally depends on when the data was collected, the geographic extent of the data, and the purpose of the data. The previous example -- WGS84 (EPSG: 4326) Latitude/Longitude -- is commonly used for data for the entire globe or many countries.
+
+Here's an illustration of assigning a CRS:
+
+```{r}
+is.projected(my.first.points) # see if a projection is defined.
+  # Returns `NA` if no geographic coordinate system or projection; returns FALSE if has geographic coordinate system but no projection.
+
+crs.geo <- CRS("+init=epsg:32633")  # UTM 33N, UTM projection for these coordinates
+proj4string(my.first.points) <- crs.geo  # define projection system of our data
+is.projected(my.first.points)
+summary(my.first.points)
+```
+
+When `CRS` is called with only an EPSG code, R will try to complete the CRS with the parameters looked up in the EPSG table.
+
+Geometry-only objects (objects without attributes) can be subsetted similar to how vectors or lists are subsetted; we can select the first two points by
+
+```{r}
+my.first.points[1:2]
+```
+
+If you want to learn more about Coordinate Reference Systems in R, have a look at [this overview](https://www.nceas.ucsb.edu/~frazier/RSpatialGuides/OverviewCoordinateReferenceSystems.pdf).
+
+#### Add Attributes
+
+Moving from a `SpatialPoints` to a `SpatialPointsDataFrame` occurs when you add a `data.frame` of attributes to the points. Let's just add an arbitrary table to the data -- this will label each point with a letter and a number. **Note points will merge with the `data.frame` based on the order of observations.**
+
+```{r}
+df <- tibble(attr1 = c('a','b','z','d','e','q','w','r','z'), attr2 = c(101:109))
+df
+```
+
+```{r}
+my.first.spdf <- SpatialPointsDataFrame(my.first.points, df)
+summary(my.first.spdf)
+```
+
+Now that we have attributes, we can also subset our data the same way we would subset a `data.frame`. Some subsetting:
+```{r}
+my.first.spdf[1:2, ]        # row 1 and 2 only
+my.first.spdf[1:2, "attr1"] # row 1 and 2 only, attr1
+plot(my.first.spdf[which(my.first.spdf$attr2 > 105),])    # select if attr2 > 5
+```
+
+***
+
+#### SpatialPoint from a lon/lat table
+
+A `SpatialPointsDataFrame` object can be created directly from a `data.frame` by specifying which columns contain the coordinates. This is interesting, for example if you have a spreadsheet that contains latitude, longitude and some values. You can create the object from the data frame in one step by using the `coordinates()` command. That automatically turns the dataframe object into a `SpatialPointsDataFrame`.
+
+```{r}
+df_with_coords <- tibble(
+  lon = toy.coordinates[,1],
+  lat = toy.coordinates[,2],
+  attr1 = c('a','b','z','d','e','q','w','r','z'),
+  attr2 = c(101:109))
+
+my.second.spdf <- SpatialPointsDataFrame(
+  coordinates(select(df_with_coords, lon, lat)), select(df_with_coords, -(lon:lat)))
+summary(my.second.spdf)
+```
+
+
+
+### 1.1.2 SpatialPolygons
+
+SpatialPolygons are very, very common (think administrative borders, countries, etc.), so they're important to get used to.
+
+#### Building up a `SpatialPolygons` from scratch.
+
+`SpatialPolygons` are a little more complicated than `SpatialPoints`. With `SpatialPoints`, we moved directly from x-y coordinates to a `SpatialPoints` object.
+
+To get a `SpatialPolygons` object, we have to build it up by (a) creating `Polygon` objects, (b) combining those into `Polygons` objects (note the "s" at the end), and finally (c) combining those to create `SpatialPolygons`. So what are these components?
+
+* A `Polygon` object is a single geometric shape (e.g. a square, rectangle, etc.) defined by a single uninterrupted line around the exterior of the shape.
+* A `Polygons` object consists of one *or more* simple geometric objects (`Polygon` objects) that combine to form what you think of as a single unit of analysis (an "observation"). For example, each island in Hawaii would be a `Polygon`, but Hawaii itself is the `Polygons` consisting of all the individual island `Polygon` objects.
+* A `SpatialPolygons` object is a collection of `Polygons` objects, where each `Polygons` object is an "observation". For example, if we wanted a map of US states, we would make a `Polygons` object for each state, then combine them all into a single `SpatialPolygons`. If you're familiar with shapefiles, `SpatialPolygons` is basically the R analogue of a `shapefile` or `layer`.
+
+**One special note:** if you want to put a hole in a polygon (e.g. drawing a donut, or if you wanted to draw South Africa and leave a hole in the middle for Lesotho) you do so by (a) creating a `Polygon` object for the outline, (b) creating a second `Polygon` object for the hole and passing the argument `hole=TRUE`, and (c) combine the two into a `Polygons` object.
+
+Let's try building up a `SpatialPolygon`!
+
+```{r}
+# create polyon objects from coordinates.
+# Each object is a single geometric polygon defined by a bounding line.
+house1.building <-  Polygon(rbind(c(1, 1),
+                                  c(2, 1),
+                                  c(2, 0),
+                                  c(1, 0)))
+
+house1.roof <- Polygon(rbind(c(1.0, 1),
+                             c(1.5, 2),
+                             c(2.0, 1)))
+
+house2.building <-  Polygon(rbind(c(3, 1),
+                              	  c(4, 1),
+	                                c(4, 0),
+	                                c(3, 0)))
+
+house2.roof <- Polygon(rbind(c(3.0, 1),
+                             c(3.5, 2),
+                             c(4.0, 1)))
+
+house2.door <-  Polygon(rbind(c(3.25,0.75),
+                              c(3.75,0.75),
+                              c(3.75,0.00),
+                              c(3.25,0.00)),
+                              hole=TRUE)
+
+# create lists of polygon objects from polygon objects and unique ID
+# A `Polygons` is like a single observation.
+h1 <-  Polygons(list(house1.building, house1.roof), "house1")
+h2 <-  Polygons(list(house2.building, house2.roof, house2.door), "house2")
+
+# create spatial polygons object from lists
+# A SpatialPolygons is like a shapefile or layer.
+houses <-  SpatialPolygons(list(h1,h2))
+plot(houses)
+```
+
+#### Adding Attributes to SpatialPolygon
+As with SpatialPoints, we can associated a `data.frame` with SpatialPolygons. There are two things that are important about doing this with SpatialPolygons:
+
+1. When you **first** associate a `data.frame` with a SpatialPolygons object, R will line up rows and polygons by matching `Polygons` object names with the `data.frame` `row.names`.
+2. After the initial association, this relationship is **NO LONGER** based on row.names! For the rest of the `SpatialPolygonsDataFrame`'s life, the association between `Polygons` and rows of your `data.frame` is based on the order of rows in your `data.frame`, so don't try to change the order of the `data.frame` by hand!
+
+Make attributes and plot. Note how the door -- which we created with `hole=TRUE` is empty!
+```{r}
+attr <- data.frame(attr1=1:2, attr2=6:5, row.names=c("house2", "house1"))
+```
+
+```{r}
+houses.DF <- SpatialPolygonsDataFrame(houses, attr)
+as.data.frame(houses.DF)      # Notice the rows were re-ordered!
+spplot(houses.DF)
+```
+
+#### Adding a Coordinate Reference Systems (CRS)
+As with `SpatialPoints`, a `SpatialPolygons` object on Earth doesn't actually know where it until you set its Coordinate Reference System, which you can do the same way you did with the `SpatialPoints` objects:
+
+```{r eval=FALSE}
+crs.geo <- CRS("+init=EPSG:4326")  # geographical, datum WGS84
+proj4string(houses.DF) <- crs.geo  # define projection system of our data
+```
+
+### 1.1.3 SpatialLines: Just like SpatialPolygons
+`SpatialLines` objects are basically like `SpatialPolygons`, except they're built up using `Line` objects (each a single continuous line, like each branch of a river), `Lines` objects (collection of lines that form a single unit of analysis, like all the parts of a river), to `SpatialLines` (collection of "observations", like rivers).
+
+### 1.1.4 Recap of Spatial* Objects
+Here's a quick summary of the construction flow of SpatialObjects:
+
+![DEM reproject](images/Creating_Spatial_Objects.png)
+
+
+Turns out Spatial* objects are just a collection of things that you can see using the `str` command:
+
+```{r}
+str(my.first.spdf)
+```
+
+What this shows is that `my.first.spdf` is actually a collection of different things -- `data`, `coords`, `bbox`, and a `proj4string`. In the same way we can get many of these things with commands, we can also call them with the `@` command!
+
+```{r}
+bbox(my.first.spdf)
+my.first.spdf@bbox
+```
+
+```{r}
+coordinates(my.first.spdf)
+my.first.spdf@coords
+```
+
+```{r}
+as.data.frame(my.first.spdf)
+my.first.spdf@data
+```
+
+In R, the items with `@` at the start of the line are called "slots". If you are used to working in another object-oriented language like Java or Python, these are analogous to attributes. You can access each of these "slots" using the `@` operator, making them equivalent of some function calls. It is a general recommendation to not modify slots by directly assigning values to them unless you know very well what you do.
+
+
+## 1.2 Raster Data
+
+Rasters are much more compact than vectors. Because of their regular structure the coordinates do not need to be recorded for each pixel or cell in the rectangular extent. A raster has a CRS, an origin, a distance or cell size in each direction, a dimension in terms of numbers of cells, and an array of values. If necessary, the coordinates for any cell can be computed.
+
+Note that the `sp` library used for vector data does have some basic tools for manipulating raster data. However, the `sp` library has largely been replaced by the `raster` library we will use here, and anything one can do with the `sp` library can also be done with the `raster` library.
+
+
+### 1.2.1 Creating Raster Data From Scratch
+
+A raster dataset has three primary components:
+
+* A grid, which consists of:
+    + dimensions (number of rows and columns),
+    + resolution (size of sides of each cell),
+    + and extent (where the edges of the grid "are")
+* A set of values associated with each cell in the grid
+* Projection data about how the grid relates to the physical world
+
+It's relatively easy to start a raster object by just defining the grid:
+
+```{r}
+basic_raster <- raster(ncol=5, nrow=10, xmn=0, xmx=5, ymn=0, ymx=10)
+basic_raster
+```
+
+However, note that this raster has a grid, but no data:
+```{r}
+hasValues(basic_raster)
+```
+
+We add data to the raster object using the `values` function:
+
+```{r}
+values(basic_raster) <-  1:50  # Note 50 is the total number of cells in the grid.
+plot(basic_raster)
+```
+
+**Note even though a grid is a 2-dimensional object, `raster` looks for data that is one-dimensional,** then assigns the values in the DataFrame by (a) starting in the top left cell, then (b) moving across the row from left to right, and finally (c) moving down a row and repeating the whole process. Thus each column must be the length of the total number of cells.
+
+
+#### Defining projection
+To define a projection, we use the same proj4 strings as vector data, but without the intermediate step of creating a CRS object:
+
+```{r}
+projection(basic_raster) <- "+init=EPSG:4326"
+```
+
+
+
+## 2. Importing and Exporting Spatial Data
+
+* use the `rgdal` package for Vector data
+* use the `raster` package for Raster data
+
+### 2.1  Importing and Exporting Vector Data
+
+Normally we do not create `Spatial*` objects by hand. It is much more common to work with existing data read from external sources like shapefiles, or databases.
+
+In order to read those into R and turn them into `Spatial*` family objects we rely on the `rgdal` package. It provides us direct access to the powerful [GDAL library](http://gdal.org) from within R.
+
+We can read in and write out spatial data using:
+
+`readOGR()` and `writeOGR()`
+
+The parameters provided for each function varies depending on the exact spatial file type you are reading. We will take the ESRI shapefile as an example. A shapefile consists of various files, and R expects all those files to be in one directory.
+
+When reading in a shapefile, `readOGR()` expects at least the following two arguments:
+
+    datasource name (dsn)  # the path to the folder that contains the files
+                           # Note that this is a path to the folder
+    layer name (layer)     # the file name without extension
+                           # Note that this is not a path but just the name of the file
+
+For example, if I have a shapefile called `sf_incomes.shp` and all its associated files (like _.dbf, .prj, .shx_) in a directory called `data/shapefiles/` in my project folder, my command to read this shapefile would look like this:
+
+```{r}
+my_shapefile <- readOGR(dsn = "data/shapefiles/", layer = "sf_incomes")
+plot(my_shapefile)
+```
+
+**Note you may run into trouble if you set your working directory to the folder holding the shapefile as 'readOGR()' doesn't like it if the first argument is an empty string.**
+
+
+## 2.2 Reading Raster data from files
+
+The `raster` library can also read many file types on it's own. For example, let's load SF Elevation data.
+
+```{r, eval=TRUE}
+my_raster_file <- raster("data/sanfrancisconorth.dem")
+plot(my_raster_file)
+```
+
+
+
+# 3. Geo-Coding
+This section provides an overview of tools for geocoding -- converting addresses or names of locations into latitudes and longitudes -- using the google maps API.
+
+
+## 3.1 Geo-Coding with Google Maps
+
+Google offers a service that allows users to submit requests for the latitudes and longitudes associated with different addresses or place names from within R and to get back results that are easy to work within R. This service is called a google geocoding API.
+
+Basically, the google maps API will accept any query you could type into Google Maps and returns information on Google's best guess for the latitude and longitude associated with your query. The tool for doing this from within R is found int he `ggmap` library, and the basic syntax is as follows:
+
+
+```{r}
+library(ggmap)
+
+addresses <- c("1600 Pennsylvania NW, Washington, DC", "denver, co")
+
+locations <- geocode(addresses, source="google", output = "more")
+locations
+```
+
+Note the `output` option can be set to "latlon", "latlona", "more", or "all" depending on how much information you want back. I would **STRONGLY** recommend always using the `output="more"` option so that you get information on how certain google is about its guess!
+
+
+## 3.2 Interpreting `geocode` results
+
+Geocoding results include two fields that are **very** important to understand: `loctype` and `type`.
+
+### type
+
+Google thinks of the world as containing a number of different types of locations. Some are points (like houses), while others are areas (like cities). The `type` field tells you if google is giving you the location of a house, or just the centroid of a city. [A full list of different types is available from google here](https://developers.google.com/maps/documentation/geocoding/intro?csw=1#Types), but the most common results (in my experience) are:
+
+* `street_address`: indicates a precise street address
+* `locality`: indicates an incorporated city or town political entity
+* `point_of_interest`:  indicates a named point of interest. Typically, these "POI"s are prominent local entities that don't easily fit in another category, such as "Empire State Building" or "Statue of Liberty."
+* `administrative_area_level_[SOME NUMBER]`: these "civil entities", where 0 is the country, 1 is the first administrative level below that (in the US, states), 2 is below that (in the US, counties), etc.
+
+This is important because if you get a locality or administrative area, the latitude and longitude you get it just the centroid of the locality, and you should interpret it as such!
+
+### loctype
+
+The `loctype` column provides similar but distinct information to `type`, including more information about `street_address` results. In order of precision, [the possible values for this field are](https://developers.google.com/maps/documentation/geocoding/intro#results):
+
+* "ROOFTOP" indicates that the returned result is a precise geocode for which we have location information accurate down to street address precision.
+* "RANGE_INTERPOLATED" indicates that the returned result reflects an approximation (usually on a road) interpolated between two precise points (such as intersections). Interpolated results are generally returned when rooftop geocodes are unavailable for a street address.
+* "GEOMETRIC_CENTER" indicates that the returned result is the geometric center of a result such as a polyline (for example, a street) or polygon (region).
+* "APPROXIMATE" indicates that the returned result is approximate. **localities and admin areas have this value!**
+
+
+## 3.3 Query Limits
+
+Google limits individual (free) users to 2,500 queries per day and 10 queries per second. You can see how many queries you have remaining by typing `geocodeQueryCheck()`. You can also buy [additional requests (up to 100,000 a day) for $0.50 / 1000 requests, and there is a paid subscription service that will provide up to 100,000 requests a day](https://developers.google.com/maps/documentation/geocoding/usage-limits).
+
+Because of this, it is important that you not test your code on your entire dataset or you'll waste your queries when you're debugging your code!
+
+
+
+# 5 Making Maps
+
+### A Motivating Example Using `ggplot2`
+
+```{r, message=TRUE, warning=FALSE}
+library(tidyverse)
+library(sp)
+library(rgdal)
+library(rgeos)
+library(raster)
+library(viridis)
+library(gtable)
+library(grid)
+
+
+# load data: average age in CH
+data <- read.csv("input_grossenbacher/avg_age_15.csv", stringsAsFactors = F)
+
+# load shapefile
+gde_15 <- readOGR("input_grossenbacher/geodata/gde-1-1-15.shp", layer = "gde-1-1-15")
+
+# project it
+# set crs to ch1903/lv03, just to make sure  (EPSG:21781)
+crs(gde_15) <- "+proj=somerc +lat_0=46.95240555555556
++lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000
++ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs"
+# fortify, i.e., make ggplot2-compatible
+
+# fortify SpatialPolygonsDataFrame to read it in ggplot
+map_data_fortified <- fortify(gde_15, region = "BFS_ID") %>%
+  mutate(id = as.numeric(id))
+
+
+# join fortified SpatialPolygonsDataFrame with data
+map_data <- map_data_fortified %>% left_join(data, by = c("id" = "bfs_id"))
+
+
+# load  municipalities shapefile
+gde_15_political <- readOGR("input_grossenbacher/geodata/g1g15.shp", layer = "g1g15")
+
+# project it
+crs(gde_15_political) <- "+proj=somerc +lat_0=46.95240555555556
++lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000
++ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs"
+
+# fortify SpatialPolygonsDataFrame to read it in ggplot
+map_data_political_fortified <- fortify(gde_15_political, region = "GMDNR") %>%
+  mutate(id = as.numeric(id))
+
+# join fortified SpatialPolygonsDataFrame with data
+map_data_political <- map_data_political_fortified %>% left_join(data, by = c("id" = "bfs_id"))
+map_data_political <- map_data_political[complete.cases(map_data_political),]
+
+
+# read in background relief raster
+relief <- raster("input_grossenbacher/geodata/02-relief-georef-clipped-resampled.tif")
+relief_spdf <- as(relief, "SpatialPixelsDataFrame")
+# relief is converted to a very simple data frame,
+# just as the fortified municipalities.
+# for that we need to convert it to a
+# SpatialPixelsDataFrame first, and then extract its contents
+# using as.data.frame
+relief <- as.data.frame(relief_spdf) %>%
+  rename(value = `X02.relief.georef.clipped.resampled`)
+# remove unnecessary variables
+rm(relief_spdf)
+rm(gde_15)
+rm(map_data_fortified)
+rm(map_data_political_fortified)
+
+
+# customize theme
+theme_map <- function(...) {
+  theme_minimal() +
+  theme(
+    text = element_text(family = "Avenir Next Medium", color = "#22211d"),
+    axis.line = element_blank(),
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    # panel.grid.minor = element_line(color = "#ebebe5", size = 0.2),
+    panel.grid.major = element_line(color = "#ebebe5", size = 0.2),
+    panel.grid.minor = element_blank(),
+    plot.background = element_rect(fill = "#f5f5f2", color = NA),
+    panel.background = element_rect(fill = "#f5f5f2", color = NA),
+    legend.background = element_rect(fill = "#f5f5f2", color = NA),
+    panel.border = element_blank(),
+    ...
+  )
+}
+
+# customize legend
+extendLegendWithExtremes <- function(p){
+  p_grob <- ggplotGrob(p)
+  legend <- gtable_filter(p_grob, "guide-box")
+  legend_grobs <- legend$grobs[[1]]$grobs[[1]]
+  # grab the first key of legend
+  legend_first_key <- gtable_filter(legend_grobs, "key-3-1-1")
+  legend_first_key$widths <- unit(2, units = "cm")
+  # modify its width and x properties to make it longer
+  legend_first_key$grobs[[1]]$width <- unit(2, units = "cm")
+  legend_first_key$grobs[[1]]$x <- unit(0.15, units = "cm")
+
+  # last key of legend
+  legend_last_key <- gtable_filter(legend_grobs, "key-3-6-1")
+  legend_last_key$widths <- unit(2, units = "cm")
+  # analogous
+  legend_last_key$grobs[[1]]$width <- unit(2, units = "cm")
+  legend_last_key$grobs[[1]]$x <- unit(1.02, units = "cm")
+
+  # grab the last label so we can also shift its position
+  legend_last_label <- gtable_filter(legend_grobs, "label-5-6")
+  legend_last_label$grobs[[1]]$x <- unit(2, units = "cm")
+
+  # Insert new color legend back into the combined legend
+  legend_grobs$grobs[legend_grobs$layout$name == "key-3-1-1"][[1]] <-
+    legend_first_key$grobs[[1]]
+  legend_grobs$grobs[legend_grobs$layout$name == "key-3-6-1"][[1]] <-
+    legend_last_key$grobs[[1]]
+  legend_grobs$grobs[legend_grobs$layout$name == "label-5-6"][[1]] <-
+    legend_last_label$grobs[[1]]
+
+  # finally, I need to create a new label for the minimum value
+  new_first_label <- legend_last_label$grobs[[1]]
+  new_first_label$label <- round(min(map_data$avg_age_15, na.rm = T), 2)
+  new_first_label$x <- unit(-0.15, units = "cm")
+  new_first_label$hjust <- 1
+
+  legend_grobs <- gtable_add_grob(legend_grobs,
+                                  new_first_label,
+                                  t = 6,
+                                  l = 2,
+                                  name = "label-5-0",
+                                  clip = "off")
+  legend$grobs[[1]]$grobs[1][[1]] <- legend_grobs
+  p_grob$grobs[p_grob$layout$name == "guide-box"][[1]] <- legend
+
+  # the plot is now drawn using this grid function
+  grid.newpage()
+  grid.draw(p_grob)
+}
+
+
+# same code as above but different breaks
+pretty_breaks <- c(40,42,44,46,48)
+# find the extremes
+minVal <- min(map_data$avg_age_15, na.rm = T)
+maxVal <- max(map_data$avg_age_15, na.rm = T)
+# compute labels
+labels <- c()
+brks <- c(minVal, pretty_breaks, maxVal)
+# round the labels (actually, only the extremes)
+for(idx in 1:length(brks)){
+  labels <- c(labels,round(brks[idx + 1], 2))
+}
+
+labels <- labels[1:length(labels)-1]
+# define a new variable on the data set just as above
+map_data$brks <- cut(map_data$avg_age_15,
+                     breaks = brks,
+                     include.lowest = TRUE,
+                     labels = labels)
+
+brks_scale <- levels(map_data$brks)
+labels_scale <- rev(brks_scale)
+
+
+# plot it
+p <- ggplot() +
+    # municipality polygons
+    geom_raster(data = relief, aes_string(x = "x",
+                                          y = "y",
+                                          alpha = "value")) +
+    scale_alpha(name = "", range = c(0.6, 0), guide = F)  +
+    geom_polygon(data = map_data, aes(fill = brks,
+                                      x = long,
+                                      y = lat,
+                                      group = group)) +
+    # municipality outline
+    geom_path(data = map_data, aes(x = long,
+                                   y = lat,
+                                   group = group),
+              color = "white", size = 0.1) +
+    coord_equal() +
+    theme_map() +
+    theme(
+      legend.position = c(0.5, 0.03),
+      legend.text.align = 0,
+      legend.background = element_rect(fill = alpha('white', 0.0)),
+      legend.text = element_text(size = 7, hjust = 0, color = "#4e4d47"),
+      plot.title = element_text(hjust = 0.5, color = "#4e4d47"),
+      plot.subtitle = element_text(hjust = 0.5, color = "#4e4d47",
+                                   margin = margin(b = -0.1,
+                                                   t = -0.1,
+                                                   l = 2,
+                                                   unit = "cm"),
+                                   debug = F),
+      legend.title = element_text(size = 8),
+      plot.margin = unit(c(.5,.5,.2,.5), "cm"),
+      panel.spacing = unit(c(-.1,0.2,.2,0.2), "cm"),
+      panel.border = element_blank(),
+      plot.caption = element_text(size = 6,
+                                  hjust = 0.92,
+                                  margin = margin(t = 0.2,
+                                                  b = 0,
+                                                  unit = "cm"),
+                                  color = "#939184")
+    ) +
+    labs(x = NULL,
+         y = NULL,
+         title = "Switzerland's regional demographics",
+         subtitle = "Average age in Swiss municipalities, 2015",
+         caption = "Map CC-BY-SA; Author: Timo Grossenbacher (@grssnbchr), Geometries: ThemaKart, BFS; Data: BFS, 2016; Relief: swisstopo, 2016") +
+    scale_fill_manual(
+      values = rev(magma(8, alpha = 0.8)[2:7]),
+      breaks = rev(brks_scale),
+      name = "Average age",
+      drop = FALSE,
+      labels = labels_scale,
+      guide = guide_legend(
+        direction = "horizontal",
+        keyheight = unit(2, units = "mm"),
+        keywidth = unit(70/length(labels), units = "mm"),
+        title.position = 'top',
+        title.hjust = 0.5,
+        label.hjust = 1,
+        nrow = 1,
+        byrow = T,
+        reverse = T,
+        label.position = "bottom"
+      )
+    )
+extendLegendWithExtremes(p)
+```
+
+
+```{r}
+library(rgdal)
+library(ggplot2)
+palo_alto <- readOGR("data/palo_alto", "palo_alto")
+
+# create a unique ID for the later join
+palo_alto$id = rownames(as.data.frame(palo_alto))
+
+
+# turn SpatialPolygonsDataframe into a data frame using fortify
+palo_alto.pts <- fortify(palo_alto, region="id") #this only has the coordinates
+palo_alto.df <- merge(palo_alto.pts, palo_alto, by="id", type='left') # add the attributes back
+
+
+# calculate even breaks
+palo_alto.df$qt <- cut(palo_alto.df$PrCpInc, 6)
+
+
+# plot  
+ggplot(palo_alto.df, aes(long, lat, group = group, fill = qt)) + 
+  geom_polygon() + 
+  scale_fill_brewer("Per Cap Income", palette = "OrRd", labels = c('0 to 26,800', 
+                                 '26,800 to 43,900', 
+                                 '43,900 to 60,900',
+                                 '60,900 to 78,000', 
+                                 '78,000 to 95,100', 
+                                 '95,100 to 112,000')) + 
+  theme(line = element_blank(),  
+        axis.text=element_blank(),
+        axis.title=element_blank(),
+        panel.background = element_blank()) +
+  coord_equal()
+```
+
+## tmap
+```{r}
+library(tmap)
+tm_shape(palo_alto) +
+  tm_fill("PrCpInc", palette = 'OrRd')
+
+```
+
+
+## ggmap
+
+```{r}
+library(ggmap)
+get_map('university zurich') %>% ggmap
+get_map('university zurich', zoom = 15) %>% ggmap
+
+europe <- c(left = -12, bottom = 35, right = 30, top = 63)
+get_map(europe, zoom = 5) %>% ggmap
+
+get_stamenmap(europe, zoom = 5, maptype = "toner-lite") %>% ggmap()
+```
+
+```{r}
+my_data <- tibble(
+  cities = c('Barcelona', 'London', 'Dublin', 'Zürich', 'Paris', 'Berlin'),
+  values = c(50, 20, 70, 10, 40, 90)
+)
+
+locations <- geocode(my_data$cities, source = 'google', output = 'more')
+
+left_join(my_data, locations, by = c('cities' = 'locality')) %>% 
+  select(cities:lat) -> my_data
+
+get_stamenmap(europe, zoom = 5, maptype = "toner-lite") %>% 
+  ggmap() +
+  geom_point(data = my_data, aes(x = lon, y = lat, size = values), alpha = 0.5)
+  
+
+```
+
+
+
+# 6 The `sf` package
+
+In a few words, here’s what is interesting about `sf`:
+
+* It’s providing users with one **unique** class for all vector types,
+* It’s based on **Simple Features**, a formal standard (ISO 19125-1:2004) widely used in the GIS world that describes how objects in the real world can be represented,
+* The main class provided by `sf` is a **data.frame** – which means that a lot of data analysis methods are readily available,
+* It combines the capabilities of `sp`, `rgdal`, and `rgeos` under one **unique package**,
+* It is easier to install on some platforms than `rgdal`,
+* It is **much faster**, and **scales better** than `sp` and `rgdal` — the upcoming version will include **spatial indexing**!
+
+The trick of `sf` is that spatial is not that special anymore: it describes spatial attributes as **geometries**, which is just another attribute of the dataset.
+
+What was `SpatialPoints`, `SpatialPolgons`, etc before will now be: `MULTIPOINT`, `MULTIPOLYGON`, etc.
+
+```{r}
+library(sf)
+nc <- st_read(system.file("shape/nc.shp", package="sf"))
+str(nc)
+print(nc[9:15], n = 3)
+```
+
+The functions provided by sf are prefixed by `st_`. That makes it easy to search for them on the command line too.
+
+## 6.1 Loading Spatial Data
+
+You can load spatial data from txt or csv files using the familiar `dplyr` commands,
+
+```{r, eval=FALSE}
+df <- read_csv('./path/to/my/file.csv')
+```
+
+Let’s take the example dataset `meuse` from the `sp` package. `meuse` is a `data.frame` — similar to what could have been read from a CSV file using `read_csv`:
+
+```{r}
+data('meuse', package = "sp")
+head(meuse)
+```
+
+```{r}
+# what was 
+# SpatialPointsDataFrame(
+#    coordinates(select(meuse, x, y)), select(meuse, -(x:y)))
+
+ms <- st_as_sf(
+  meuse,
+  coords = c('x', 'y'),
+  crs = "+init=epsg:28992"
+)
+ms
+```
+
+There is a simple plotting funtion included in `sf`. It is very similar to the old `sp::spplot`:
+
+```{r}
+plot(ms)
+```
+
+
+
+```{r}
+# what would have been before readOGR()
+file_name <- system.file("shape/nc.shp", package = "sf")
+nc <- st_read(file_name)
+```
+
+```{r}
+print(nc)
+plot(nc)
+plot(nc['AREA'])
+```
+
+
+## 6.2 Writing Spatial Data
+
+```{r}
+st_write(nc, "output/nc.shp")
+st_write(nc, "output/nc.shp", delete_layer = TRUE) # overrides an existing file
+write_sf(nc, "output/nc.shp") # same as no.2 with quiet = TRUE, delete_layer = TRUE
+```
+
+
+## 6.3 Merging Spatial with Non-Spatial Dataframes
+
+```{r}
+non_spatial_df <- data.frame(
+  CNTY_ID = nc$CNTY_ID,
+  my_data <- runif(nrow(nc))
+)
+
+left_join(nc, non_spatial_df)
+```
+
+## 6.4 Projection
+
+```{r}
+st_crs(nc)
+```
+
+```{r}
+st_is_longlat(nc)
+```
+
+
+```{r}
+nc_p <- st_transform(nc, crs = 32119)
+st_crs(nc_p)
+```
+
+## 6.5 ggplot2 compatible
+```{r}
+# devtools::install_github('tidyverse/ggplot2', force = TRUE)
+# install and restart your R session
+library(sf)
+library(ggplot2)
+
+nc <- st_read(system.file("shape/nc.shp", package = 'sf'), quiet = TRUE)
+ggplot(nc) +
+  geom_sf(aes(fill = AREA))
+```
+
+```{r}
+library(viridis)
+ggplot(nc) +
+  geom_sf(aes(fill = AREA)) +
+  scale_fill_viridis("Area") +
+  ggtitle("Area of counties in North Carlolina") +
+  theme_bw()
+  
+```
+
+
+```{r}
+library(viridis)
+ggplot(nc) +
+  geom_sf(aes(fill = AREA)) +
+  scale_fill_viridis("Area") +
+  coord_sf(crs = st_crs(102003)) +
+  ggtitle("Area of counties in North Carlolina (Albers Projection") +
+  theme_bw()
+  
+```
+
+
+# Sources
+The document draws from the excellent [tutorials by Nick Eubank](http://www.nickeubank.com/gis-in-r/).
+
+Moreover, have a look at these cheatsheets that may help you with learning both GIS concepts and vocabulary:
+
+* [Vector Data Cheatsheets](http://www.nickeubank.com/wp-content/uploads/2015/10/gis_in_r_vector_cheatsheet.pdf)
+* [Raster Data Cheatsheet](http://www.nickeubank.com/wp-content/uploads/2015/10/gis_in_r_raster_cheatsheet.pdf)
+* [General Spatial Cheatseet](http://www.maths.lancs.ac.uk/~rowlings/Teaching/UseR2012/cheatsheet.html)

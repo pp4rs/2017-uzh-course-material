@@ -60,7 +60,7 @@ All materials are licensed under a Creative Commons CC-BY-NC-SA license. The lic
 The suggested citation for this repository is:
 
 ```
-Lachlan Deer, Adran Etter, Julian Langer & Max Winkler, 2017, Introduction and Motivation, Programming Practices for Research in Economics, University of Zurich
+Lachlan Deer, Adrian Etter, Julian Langer & Max Winkler, 2017, Introduction and Motivation, Programming Practices for Research in Economics, University of Zurich
 ```
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />
