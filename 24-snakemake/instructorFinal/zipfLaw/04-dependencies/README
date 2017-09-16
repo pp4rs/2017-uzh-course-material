@@ -1,0 +1,8 @@
+# Correct Specification of dependencies
+
+* lead contributor: Lachlan Deer (@ldeer)
+
+## What we do
+
+* Discuss that dependencies can be data and code
+* show how to have multiple inputs and how to reference them using the `{input.xxx} syntax`

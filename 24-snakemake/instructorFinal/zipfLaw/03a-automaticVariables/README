@@ -1,0 +1,7 @@
+# Using Automatic variables in a snakefile
+
+* lead contributor: Lachlan Deer (@ldeer)
+
+## What we do
+
+* Show how to use the `{input}` and `{output}` macros to simplify the shell calls  within a rule

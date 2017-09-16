@@ -1,0 +1,16 @@
+# Subworkflow for the Paper
+# main Contributor: Lachlan Deer (@ldeer)
+
+subworkflow analysis:
+    workdir: "../analysis"
+    snakefile: "../analysis/Snakefile"
+
+## paper: builds the pdf of the manuscript
+rule paper:
+    input:
+        manuscript = "shortpaper.md",
+        figure = analysis("../../out/figures/abyss.png")
+    output:
+        "../../out/paper/shortpaper.pdf"
+    shell:
+        "pandoc {input.manuscript} --latex-engine=xelatex -o {output}"

@@ -1,0 +1,74 @@
+# Subworkflow: Paper
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "../../" + "config.yaml"
+
+# --- Set up Dictionaries --- #
+
+# Get a list of all models we want to run
+MODELS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob("../../" +
+                                        config["src_model_specs"] + "*.json")]
+
+# Get a list of all markdown files we want to compileto pdf
+PDFS =  [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob("*.md")]
+
+# Get a list of all equations in the paper folder
+EQUATIONS =  [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob("formulas/*.tex")]
+
+# --- Sub Workflows --- #
+
+subworkflow figures:
+    workdir: "../../" + config["ROOT"]
+    snakefile: "../../" + config["src_final"] + "Snakefile"
+
+# --- Build Rules --- #
+
+## pdfs:
+rule pdfs:
+    input:
+        expand("../../" + config["out_paper"] + "{iPDF}.pdf", iPDF = PDFS)
+
+## compile_manuscript: builds the pdf of the manuscript
+rule compile_manuscript:
+    input:
+        preamble   = "preamble.tex",
+        refs       = "refs.bib",
+        refs_style = "chicago.csl",
+        figures    = figures(expand( config["out_figures"] +
+                                "{iModel}.png", iModel = MODELS)),
+        equations  = expand("formulas/{iEquation}.tex", \
+                                iEquation = EQUATIONS),
+        manuscript = "research_paper.md",
+    output:
+        "../../" + config["out_paper"] + "research_paper.pdf"
+    shell:
+        "pandoc -H {input.preamble} \
+            {input.manuscript} \
+            --filter pandoc-citeproc \
+            -o {output}"
+
+## compile_slides: builds the pdf of the slides
+rule compile_slides:
+    input:
+        preamble   = "preamble_slides.tex",
+        refs       = "refs.bib",
+        refs_style = "chicago.csl",
+        equations  = expand("formulas/{iEquation}.tex", \
+                                iEquation = EQUATIONS),
+        manuscript = "research_pres_30min.md",
+    output:
+        "../../" + config["out_paper"] + "research_pres_30min.pdf"
+    shell:
+        "pandoc -t beamer \
+            {input.manuscript} \
+            --filter pandoc-citeproc \
+            --slide-level 2 \
+            --latex-engine=pdflatex \
+            -o {output}"

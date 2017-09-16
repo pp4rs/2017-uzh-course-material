@@ -1,0 +1,29 @@
+# Project Workflow for Simple Text Analysis
+# Main Contributor: Lachlan Deer (@ldeer)
+
+# --- Build Rules --- #
+
+rule processedData:
+    input:
+        abyss = "out/analysis/abyss.dat",
+        isles = "out/analysis/isles.dat"
+
+rule abyss:
+    input: "src/data/abyss.txt"
+    output:
+        "out/analysis/abyss.dat"
+    shell:
+        "python src/analysis/wordcount.py src/data/abyss.txt \
+            out/analysis/abyss.dat"
+
+rule isles:
+    input: "src/data/last.txt"
+    output:
+        "out/analysis/isles.dat"
+    shell:
+        "python src/analysis/wordcount.py src/data/isles.txt \
+            out/analysis/isles.dat"
+
+rule clean:
+    shell:
+        "rm -f out/analysis/*.dat"

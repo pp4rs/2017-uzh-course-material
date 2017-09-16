@@ -1,0 +1,65 @@
+# Project Workflow for Simple Text Analysis
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+## --- Set up Dictionaries --- ##
+
+# Get a list os all texts in the data folder
+TEXTS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/data/*.txt')]
+#print(TEXTS)
+
+# --- Build Rules --- #
+
+## All: generate all summary tables and figures
+
+rule all:
+    input:
+        table = "out/final/results.txt",
+        figures = expand("out/figures/{iText}.png", iText = TEXTS)
+
+
+## Results : process the results and test Zipf's Law
+rule results:
+    input:
+        data = expand("out/analysis/{iText}.dat", iText = TEXTS),
+        script = "src/analysis/zipf_test.py"
+    output:
+        "out/final/results.txt"
+    shell:
+        "python {input.script} {input.data} > {output}"
+
+## Generate Figures: plot relative word counts for each text
+rule pngFiles:
+    input:
+        expand("out/figures/{iText}.png", iText = TEXTS)
+
+rule generateFig:
+    input:
+        data = "out/analysis/{dataset}.dat",
+        script = "src/analysis/plotcount.py"
+    output:
+        "out/figures/{dataset}.png"
+    shell:
+        "python {input.script} {input.data} {output}"
+
+
+## Process Data: process texts and count words for each text
+rule processedData:
+    input:
+        expand("out/analysis/{iText}.dat", iText = TEXTS)
+
+rule countWords:
+    input:
+        data = "src/data/{dataset}.txt",
+        script = "src/analysis/wordcount.py"
+    output:
+        "out/analysis/{dataset}.dat"
+    shell:
+        "python {input.script} {input.data} {output}"
+
+## Clean: remove all generated outputs
+rule clean:
+    shell:
+        "rm $(snakemake --summary | tail -n+2 | cut -f1)"

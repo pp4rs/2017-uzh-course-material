@@ -1,0 +1,10 @@
+ROOT: "."
+src: "src/"
+src_analysis: "src/analysis/"
+src_paper: "src/paper/"
+src_data: "src/data/"
+
+out_analysis: "out/analysis/"
+out_figures: "out/figures/"
+out_final: "out/final/"
+out_paper: "out/paper/"

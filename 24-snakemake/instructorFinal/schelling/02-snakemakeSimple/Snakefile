@@ -1,0 +1,169 @@
+# Project Workflow for the Schelling Model
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Set up Dictionaries --- #
+
+# Get a list of all models we want to run
+MODELS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/model_specs/*.json')]
+# print(MODELS)
+
+# Get a list of all markdown files we want to compileto pdf
+PDFS =  [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/paper/*.md')]
+# print(PDFS)
+
+# Get a list of all equations in the paper folder
+EQUATIONS =  [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/paper/formulas/*.tex')]
+# print(EQUATIONS)
+
+# --- Build Rules --- #
+
+rule all:
+    input:
+        pdfs = expand("out/paper/{iPDF}.pdf", iPDF = PDFS),
+        figures = expand("out/figures/{iModel}.png", iModel = MODELS),
+        models = expand("out/analysis/{iModel}.pickle", iModel = MODELS)
+
+## pdfs:
+rule pdfs:
+    input:
+        expand("out/paper/{iPDF}.pdf", iPDF = PDFS)
+
+## compile_manuscript: builds the pdf of the manuscript
+rule compile_manuscript:
+    input:
+        preamble   =  "src/paper/preamble.tex",
+        refs       = "src/paper/refs.bib",
+        refs_style = "src/paper/chicago.csl",
+        figures    = expand("out/figures/{iModel}.png", iModel = MODELS),
+        equations  = expand("src/paper/formulas/{iEquation}.tex", \
+                                iEquation = EQUATIONS),
+        manuscript = "src/paper/research_paper.md",
+    output:
+        "out/paper/research_paper.pdf"
+    shell:
+        "pandoc -H {input.preamble} \
+            {input.manuscript} \
+            --filter pandoc-citeproc \
+            -o {output}"
+
+## compile_slides: builds the pdf of the slides
+rule compile_slides:
+    input:
+        preamble   =  "src/paper/preamble_slides.tex",
+        refs       = "src/paper/refs.bib",
+        refs_style = "src/paper/chicago.csl",
+        equations  = expand("src/paper/formulas/{iEquation}.tex", \
+                                iEquation = EQUATIONS),
+        manuscript = "src/paper/research_pres_30min.md",
+    output:
+        "out/paper/research_pres_30min.pdf"
+    shell:
+        "pandoc -t beamer \
+            {input.manuscript} \
+            --filter pandoc-citeproc \
+            --slide-level 2 \
+            --latex-engine=pdflatex \
+            -o {output}"
+
+
+
+## figures: construct figures
+rule figures:
+    input:
+        expand("out/figures/{iModel}.png", iModel = MODELS)
+
+## gen_figure: creates figure for a model to track evolution of segregation
+# Pass Variables in the following order
+#		(0) The script to run
+#		(1) Mode Specification
+#		(2) The pickle file that stores output
+#		(3) The name of the figure the file creates
+
+rule gen_figure:
+    input:
+        data =  "out/analysis/{model}.pickle",
+        script = "src/final/plot_locations.py",
+        model_rules = "src/model_specs/{model}.json"
+    output:
+        "out/figures/{model}.png"
+    shell:
+        "python {input.script} {input.model_rules} {input.data} \
+        	   {output}"
+
+## models  : run the Schelling model using the baseline rules on how
+##           agents can move
+rule models:
+    input:
+        expand("out/analysis/{iModel}.pickle", iModel = MODELS)
+
+## simulate_model: simulates a model specified in `models` rule
+# Pass variables to shell in the following order
+#     (0) The script to run
+#     (1) Model Specification
+#     (2) The Data Set
+#     (3) Location of the Log file
+#     (4) The pickle file that stores the output
+
+rule simulate_model:
+    input:
+        data =  "out/data/initial_locations.csv",
+        script = "src/analysis/schelling.py",
+        model_rules = "src/model_specs/{model}.json"
+    output:
+        data = "out/analysis/{model}.pickle",
+        log  = "out/analysis/log/{model}.log"
+    shell:
+        "python {input.script} {input.model_rules} {input.data} \
+        	   {output.log} {output.data}"
+
+## initial_locations : Generate the initial locations of agents.
+rule initial_locations:
+    input:
+        script = "src/data_management/get_simulation_draws.py"
+    output:
+        "out/data/initial_locations.csv"
+    shell:
+        "python {input.script} {output}"
+
+# --- Clean Rules --- #
+
+## cleanDist:     remove all generated files from output directory
+rule cleanDist:
+    shell:
+        "rm -rf out/* *.pdf"
+
+## cleanAnalysis: remove all generated outputs in analysis output folder
+rule cleanAnalysis:
+    shell:
+        "rm -rf out/analysis/*"
+
+## cleanGenData:    remove all generated datasets in output folder
+rule cleanGenData:
+    shell:
+        "rm -rf out/data/*"
+
+## cleanFigures:  remove all generated figures
+rule cleanFigures:
+    shell:
+        "rm -rf out/figures/*"
+
+## cleanPaper:    remove all generated outputs from manuscript workflow
+rule cleanPaper:
+    shell:
+        "rm -rf out/paper/*"
+
+# --- Help --- #
+
+## help:          provide simple info about each rule
+rule help:
+    input:
+        mainWorkflow = "Snakefile",
+        #analysisWorkflow = config["src_analysis"] + "Snakefile",
+        #manuscriptWorkflow = config["src_paper"] + "Snakefile"
+    shell:
+     "sed -n 's/^##//p' {input.mainWorkflow}"

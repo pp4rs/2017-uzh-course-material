@@ -1,0 +1,7 @@
+# Using an All target
+
+* lead contributor: Lachlan Deer (@ldeer)
+
+## What we do
+
+* Create an `all` target that will enable building of all outputs

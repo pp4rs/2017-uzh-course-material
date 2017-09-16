@@ -1,0 +1,24 @@
+# Subworkflow for the Paper
+# main Contributor: Lachlan Deer (@ldeer)
+
+# --- Importing Configuration Files --- #
+
+configfile: "configMain.yaml"
+
+# --- Load Subworkflow --- #
+
+subworkflow analysis:
+    workdir: "../../"
+    snakefile: "../../" + config["src_analysis"] + "/Snakefile"
+
+# --- Build Workflow --- #
+
+## paper: builds the pdf of the manuscript
+rule paper:
+    input:
+        manuscript = config["src_paper"] + "shortpaper.md",
+        figure = analysis(config["out_figures"] + "abyss.png")
+    output:
+        config["out_paper"] + "shortpaper.pdf"
+    shell:
+        "pandoc {input.manuscript} --latex-engine=xelatex -o {output}"

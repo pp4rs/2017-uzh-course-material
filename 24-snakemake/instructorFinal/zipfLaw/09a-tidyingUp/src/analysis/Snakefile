@@ -1,0 +1,67 @@
+# Subworkflow: Analysis
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "configMain.yaml"
+
+# --- Set up Dictionaries --- #
+
+# Get a list os all texts in the data folder
+TEXTS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/data/*.txt')]
+
+# --- Build --- #
+
+## all Analysis: build all files generated in analysis workflow
+rule allAnalysis:
+    input:
+        table = config["out_final"] + "results.txt",
+        figures = expand( config["out_figures"] + "{iText}.png", iText = TEXTS)
+
+
+## results : process the results and test Zipf's Law
+rule results:
+    input:
+        data = expand(config["out_analysis"] + "{iText}.dat", iText = TEXTS),
+        script = config["src_analysis"] + "zipf_test.py"
+    output:
+        config["out_final"] + "results.txt"
+    shell:
+        "python {input.script} {input.data} > {output}"
+
+## pngFiles: plot relative word counts for each text
+rule pngFiles:
+    input:
+        expand(config["out_figures"] + "{iText}.png", iText = TEXTS)
+
+rule generateFig:
+    input:
+        data = config["out_analysis"] + "{dataset}.dat",
+        script = config["src_analysis"] + "plotcount.py"
+    output:
+        config["out_figures"] + "{dataset}.png"
+    shell:
+        "python {input.script} {input.data} {output}"
+
+
+## processedData: process texts and count words for each text
+rule processedData:
+    input:
+        expand(config["out_analysis"] + "{iText}.dat", iText = TEXTS)
+
+rule countWords:
+    input:
+        data = config["src_data"] + "{dataset}.txt",
+        script = config["src_analysis"] + "wordcount.py"
+    output:
+        config["out_analysis"] + "{dataset}.dat"
+    shell:
+        "python {input.script} {input.data} {output}"
+
+
+## clean: remove all generated outputs
+rule clean:
+    shell:
+        "rm $(snakemake --summary | tail -n+2 | cut -f1)"

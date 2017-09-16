@@ -1,0 +1,45 @@
+# Subworkflow: Final
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "config.yaml"
+
+# --- Set up Dictionaries --- #
+
+# Get a list of all models we want to run
+MODELS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob(config["src_model_specs"] + "*.json")]
+
+# --- Sub Workflows --- #
+
+subworkflow analysis:
+    workdir: "../../" + config["ROOT"]
+    snakefile: "../../" + config["src_analysis"] + "Snakefile"
+
+# --- Build Rules --- #
+
+## figures: construct figures
+rule figures:
+    input:
+        expand(config["out_figures"] + "{iModel}.png", iModel = MODELS)
+
+## gen_figure: creates figure for a model to track evolution of segregation
+# Pass Variables in the following order
+#		(0) The script to run
+#		(1) Mode Specification
+#		(2) The pickle file that stores output
+#		(3) The name of the figure the file creates
+
+rule gen_figure:
+    input:
+        data =  analysis(config["out_analysis"] + "{model}.pickle"),
+        script = config["src_final"] + "plot_locations.py",
+        model_rules = config["src_model_specs"] + "{model}.json"
+    output:
+        config["out_figures"] + "{model}.png"
+    shell:
+        "python {input.script} {input.model_rules} {input.data} \
+        	   {output}"

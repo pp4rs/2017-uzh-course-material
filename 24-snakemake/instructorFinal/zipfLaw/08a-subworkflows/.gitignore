@@ -1,0 +1,7 @@
+*.dat
+*.png
+out/*/*.txt
+.snakemake
+__pycache__
+out/paper/*
+*.pdf

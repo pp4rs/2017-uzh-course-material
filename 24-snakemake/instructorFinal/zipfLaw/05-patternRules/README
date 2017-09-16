@@ -1,0 +1,7 @@
+# Generalizing Rules to apply to a pattern
+
+* lead contributor: Lachlan Deer (@ldeer)
+
+## What we do
+
+* Show how to write a general rule that will apply for any call to the shell that follows a pattern

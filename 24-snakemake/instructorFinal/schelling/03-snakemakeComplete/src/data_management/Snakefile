@@ -1,0 +1,19 @@
+# Subworkflow: Data Management
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "config.yaml"
+
+# --- Build Rules --- #
+
+## initial_locations : Generate the initial locations of agents.
+rule initial_locations:
+    input:
+        script = config["src_data_mgt"] + "get_simulation_draws.py"
+    output:
+        config["out_data"] + "initial_locations.csv"
+    shell:
+        "python {input.script} {output}"

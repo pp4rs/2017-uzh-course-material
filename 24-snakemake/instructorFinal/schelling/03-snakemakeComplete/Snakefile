@@ -1,0 +1,74 @@
+
+# Project Workflow for the Schelling Model
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "config.yaml"
+
+# --- Set up Dictionaries --- #
+# Get a list of all markdown files we want to compileto pdf
+PDFS =  [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/paper/*.md')]
+
+
+# --- Sub Workflows --- #
+subworkflow pdfs:
+   workdir: config["src_paper"]
+   snakefile: config["src_paper"] + "Snakefile"
+
+# --- Build Rules --- #
+
+rule all:
+    input:
+        pdfs = pdfs(expand("../../" + config["out_paper"] +
+                    "{iPDF}.pdf", iPDF = PDFS))
+    output:
+        paper  = "research_paper.pdf",
+        slides = "research_pres_30min.pdf"
+    shell:
+        "cp out/paper/*.pdf ."
+
+# --- Clean Rules --- #
+
+## cleanDist:     remove all generated files from output directory
+rule cleanDist:
+    shell:
+        "rm -rf out/* *.pdf"
+
+## cleanAnalysis: remove all generated outputs in analysis output folder
+rule cleanAnalysis:
+    shell:
+        "rm -rf out/analysis/*"
+
+## cleanGenData:    remove all generated datasets in output folder
+rule cleanGenData:
+    shell:
+        "rm -rf out/data/*"
+
+## cleanFigures:  remove all generated figures
+rule cleanFigures:
+    shell:
+        "rm -rf out/figures/*"
+
+## cleanPaper:    remove all generated outputs from manuscript workflow
+rule cleanPaper:
+    shell:
+        "rm -rf out/paper/*"
+
+# --- Help --- #
+
+## help:          provide simple info about each rule
+rule help:
+    input:
+        mainWorkflow = "Snakefile",
+        genDataWorkflow = config["src_data_mgt"] + "Snakefile",
+        analysisWorkflow = config["src_analysis"] + "Snakefile",
+        figuresWorkflow = config["src_final"] + "Snakefile",
+        manuscriptWorkflow = config["src_paper"] + "Snakefile"
+    shell:
+     "sed -n 's/^##//p' {input.mainWorkflow} {input.genDataWorkflow} \
+            {input.analysisWorkflow} {input.figuresWorkflow} \
+            {input.manuscriptWorkflow}"

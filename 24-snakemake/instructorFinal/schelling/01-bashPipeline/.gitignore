@@ -1,0 +1,7 @@
+out/*/*.png
+out/*/*.csv
+log
+out/*/*.pickle
+out/*/*.pdf
+__pycache__
+*.pyc

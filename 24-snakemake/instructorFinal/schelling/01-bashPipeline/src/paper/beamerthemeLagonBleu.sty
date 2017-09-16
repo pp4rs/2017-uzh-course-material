@@ -1,0 +1,107 @@
+\mode<presentation>
+
+%-------------------------------------------------------------------------------
+% Themes
+%-------------------------------------------------------------------------------
+
+\useoutertheme{split}
+\useinnertheme{rounded}
+\usefonttheme{structurebold}
+%\useoutertheme{shadow}
+
+%-------------------------------------------------------------------------------
+% Templates
+%-------------------------------------------------------------------------------
+
+\beamertemplatenavigationsymbolsempty
+\beamertemplateheadempty
+\beamertemplateshadowblocks
+
+%-------------------------------------------------------------------------------
+% Own templates
+%-------------------------------------------------------------------------------
+
+\titlegraphic{
+    \includegraphics[width=0.75cm, angle=270]{./figures/logo/by-nc-sa-ccLicense.eps}%
+
+}
+
+%-------------------------------------------------------------------------------
+% Logo
+%-------------------------------------------------------------------------------
+
+%\logo{\hspace*{0.6\textwidth}\includegraphics[width=1.2cm]{sybila-logo-paper-shaded}\hspace*{0.3cm}}
+
+%-------------------------------------------------------------------------------
+% Colors
+%-------------------------------------------------------------------------------
+
+\setbeamercovered{dynamic}
+\usecolortheme{whale}
+\usecolortheme{orchid}
+
+\definecolor{bleu}{RGB}{12,91,122}
+\definecolor{burntorange}{RGB}{204,85,0}
+\definecolor{burgundy}{RGB}{122,12,36}
+\definecolor{peruTan}{RGB}{122,43,12}
+\definecolor{fijiGreen}{RGB}{91,122,12}
+\definecolor{saphire}{RGB}{12,36,122}
+
+\setbeamercolor{frametitle}{bg=bleu}
+\setbeamercolor{math text}{fg=peruTan}
+\setbeamercolor{title}{bg=bleu}
+\setbeamercolor*{item}{fg=bleu} %
+\setbeamercolor{footline}{bg=black,fg=white}
+\setbeamercolor{author in head/foot}{bg=black,fg=white}
+\setbeamercolor{title in head/foot}{bg=white!45!black}
+\setbeamercolor{block title alerted}{bg=burgundy}
+\setbeamercolor{block title example}{bg=fijiGreen}
+\setbeamercolor{block title}{bg=saphire}
+
+
+\setbeamercolor{part title}{bg=burgundy}
+
+
+
+
+
+%-------------------------------------------------------------------------------
+% Fonts
+%-------------------------------------------------------------------------------
+
+\setbeamerfont{block title}{size={}}
+\setbeamerfont{date}{size=\small}
+
+%-------------------------------------------------------------------------------
+% Bullet Style
+%-------------------------------------------------------------------------------
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[circle]
+
+%-------------------------------------------------------------------------------
+% Footer
+%-------------------------------------------------------------------------------
+\defbeamertemplate*{footline}{my footline}
+{
+    \ifnum \insertpagenumber=1
+      \leavevmode%
+      \hbox{%
+      \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+        % empty environment to raise height
+      \end{beamercolorbox}}%
+      \vskip0pt%
+    \else
+      \leavevmode%
+      \hbox{%
+      \begin{beamercolorbox}[wd=\paperwidth,ht=2.25ex,dp=1ex,center]{title in head/foot}%
+        \usebeamerfont{title in head/foot}\insertshorttitle %\insertshortauthor
+      \end{beamercolorbox}}%
+      \vskip0pt%
+    \fi
+}
+
+\setbeamertemplate{footline}[my footline]
+%\titlegraphic{\includegraphics[width=3.0cm]{sybila-logo-slide-title-shaded.pdf}}
+
+\mode
+<all>

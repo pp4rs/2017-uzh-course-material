@@ -1,0 +1,9 @@
+# Creating Subworkflows
+
+* lead contributor: Lachlan Deer (@ldeer)
+
+## What we do
+
+* Create subworkflows to split up our workflow into manageable chunks
+* How to reference subworkflows inside each other so tha the build completes oin correct order
+* Addeda simple help rule to add information about what each rule does

@@ -1,0 +1,51 @@
+# Project Workflow for Simple Text Analysis
+# Main Contributor: Lachlan Deer (@ldeer)
+
+# --- Build Rules --- #
+
+rule results:
+    input:
+        abyss = "out/analysis/abyss.dat",
+        isles = "out/analysis/isles.dat",
+        last  = "out/analysis/last.dat"
+    output:
+        "out/final/results.txt"
+    shell:
+        "python src/analysis/zipf_test.py \
+                out/analysis/abyss.dat  \
+                out/analysis/isles.dat \
+                > out/final/results.txt"
+
+rule processedData:
+    input:
+        abyss = "out/analysis/abyss.dat",
+        isles = "out/analysis/isles.dat",
+        last  = "out/analysis/last.dat"
+
+rule abyss:
+    input: "src/data/abyss.txt"
+    output:
+        "out/analysis/abyss.dat"
+    shell:
+        "python src/analysis/wordcount.py src/data/abyss.txt \
+            out/analysis/abyss.dat"
+
+rule isles:
+    input: "src/data/last.txt"
+    output:
+        "out/analysis/isles.dat"
+    shell:
+        "python src/analysis/wordcount.py src/data/isles.txt \
+            out/analysis/isles.dat"
+
+rule last:
+    input: "src/data/last.txt"
+    output:
+        "out/analysis/last.dat"
+    shell:
+        "python src/analysis/wordcount.py src/data/last.txt \
+            out/analysis/last.dat"
+
+rule clean:
+    shell:
+        "rm $(snakemake --summary | tail -n+2 | cut -f1)"

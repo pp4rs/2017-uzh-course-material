@@ -1,0 +1,75 @@
+# Project Workflow for Simple Text Analysis
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Importing Configuration Files --- #
+
+configfile: "configMain.yaml"
+
+# --- Set up Dictionaries --- #
+
+# Get a list os all texts in the data folder
+TEXTS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/data/*.txt')]
+#print(TEXTS)
+
+# --- Sub Workflows --- #
+
+subworkflow analysis:
+    workdir: config["ROOT"]
+    snakefile: config["src_analysis"] + "Snakefile"
+
+subworkflow manuscript:
+   workdir: config["ROOT"]
+   snakefile: config["src_paper"] + "Snakefile"
+
+# --- Build Rules --- #
+
+## All:           generate all outputs, copy paper to root directory
+
+rule all:
+    input:
+        table = analysis( config["out_final"] + "results.txt"),
+        figures = analysis(expand( config["out_figures"] +
+                                    "{iText}.png", iText = TEXTS)),
+        paper = manuscript(config["out_paper"] + "shortpaper.pdf")
+    output:
+        paper = "shortpaper.pdf"
+    shell:
+        "cp out/paper/*.pdf ."
+
+
+## cleanDist:     remove all generated files from output directory
+rule cleanDist:
+    shell:
+        "rm -rf out/* *.pdf"
+
+## cleanAnalysis: remove all generated outputs in analysis output folder
+rule cleanAnalysis:
+    shell:
+        "rm -rf out/analysis/*"
+
+## cleanFinal:    remove all generated outputs in the final output folder
+rule cleanFinal:
+    shell:
+        "rm -rf out/final/*"
+
+## cleanFigures:  remove all generated figures
+rule cleanFigures:
+    shell:
+        "rm -rf out/figures/*"
+
+## cleanPaper:    remove all generated outputs from manuscript workflow
+rule cleanPaper:
+    shell:
+        "rm -rf out/paper/*"
+
+## help:          provide simple info about each rule
+rule help:
+    input:
+        mainWorkflow = "Snakefile",
+        analysisWorkflow = config["src_analysis"] + "Snakefile",
+        manuscriptWorkflow = config["src_paper"] + "Snakefile"
+    shell:
+     "sed -n 's/^##//p' {input.mainWorkflow} {input.analysisWorkflow} {input.manuscriptWorkflow}"

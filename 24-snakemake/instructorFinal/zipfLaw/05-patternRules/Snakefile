@@ -1,0 +1,39 @@
+# Project Workflow for Simple Text Analysis
+# Main Contributor: Lachlan Deer (@ldeer)
+
+import glob, os
+
+# --- Set up Dictionaries --- #
+
+# Get a list os all texts in the data folder
+TEXTS = [os.path.splitext(os.path.basename(textNames))[0]
+                for textNames in glob.glob('src/data/*.txt')]
+#print(TEXTS)
+
+# --- Build Rules --- #
+
+rule results:
+    input:
+        data = expand("out/analysis/{iText}.dat", iText = TEXTS),
+        script = "src/analysis/zipf_test.py"
+    output:
+        "out/final/results.txt"
+    shell:
+        "python {input.script} {input.data} > {output}"
+
+rule processedData:
+    input:
+        expand("out/analysis/{iText}.dat", iText = TEXTS)
+
+rule countWords:
+    input:
+        data = "src/data/{dataset}.txt",
+        script = "src/analysis/wordcount.py"
+    output:
+        "out/analysis/{dataset}.dat"
+    shell:
+        "python {input.script} {input.data} {output}"
+
+rule clean:
+    shell:
+        "rm $(snakemake --summary | tail -n+2 | cut -f1)"
